@@ -11,7 +11,7 @@ import utils.ScreenshotUtil;
 
 public class BaseTest {
     protected WebDriver driver;
-    private static final Logger logger = LogManager.getLogger(BasePage.class);
+    private static final Logger logger = LogManager.getLogger(BaseTest.class);
 
     @BeforeMethod(alwaysRun = true)
     public void setUp() {
@@ -43,9 +43,7 @@ public class BaseTest {
         System.out.println("=== Test Finished: " + result.getName() + " ===");
 
         // 3. Quit driver
-        if (driver != null) {
-            driver.quit();
-        }
+        DriverFactory.quitDriver();
     }
 
     public static void logStep(int step, String message) {
