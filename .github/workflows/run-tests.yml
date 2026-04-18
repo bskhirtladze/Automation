@@ -20,4 +20,4 @@ jobs:
           java-version: 17
 
       - name: Run tests
-        run: mvn clean test
+        run: mvn clean test -B -q
