@@ -2,6 +2,7 @@ package base;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -19,8 +20,7 @@ public class BaseTest {
         driver = DriverFactory.initDriver();
 
         // 2. Browser setup
-        driver.manage().window().maximize();
-
+        driver.manage().window().setSize(new Dimension(1920, 1080));
         // 3. Open base URL from config
         driver.get(ConfigReader.get("base.url"));
 

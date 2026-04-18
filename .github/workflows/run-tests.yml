@@ -19,5 +19,18 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Install Chrome dependencies
+        run: |
+                  sudo apt-get update
+                  sudo apt-get install -y \
+                    libnss3 \
+                    libatk1.0-0 \
+                    libx11-xcb1 \
+                    libxcomposite1 \
+                    libxdamage1 \
+                    libxrandr2 \
+                    libgbm1 \
+                    libgtk-3-0
+
       - name: Run tests
         run: mvn clean test -B -q
