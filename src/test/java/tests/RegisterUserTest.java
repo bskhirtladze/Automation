@@ -29,7 +29,7 @@ public class RegisterUserTest extends BaseTest {
         Assert.assertEquals(actualTitleText, expectedTitleText, "Title text should be " + expectedTitleText);
 
         logStep(4, "Click test case number");
-        testCasePage.clickTestCaseByIndex(29);
+        testCasePage.clickTestCaseByIndex(2);
         System.out.println("Wow!");
 
     }
