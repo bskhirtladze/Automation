@@ -17,4 +17,8 @@ public class ScreenshotUtil {
             e.printStackTrace();
         }
     }
+
+    public static byte[] captureAsBytes(WebDriver driver) {
+        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+    }
 }

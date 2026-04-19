@@ -12,6 +12,7 @@ import utils.ConfigReader;
 import utils.ScreenshotUtil;
 import utils.TestContext;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
 
 public class BaseTest {
@@ -31,13 +32,18 @@ public class BaseTest {
 
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
+
+        String testName = result.getName();
+
         if (result.getStatus() == ITestResult.FAILURE) {
-            ScreenshotUtil.capture(driver, result.getName());
+            byte[] screenshot = ScreenshotUtil.captureAsBytes(driver);
+            Allure.addAttachment("Screenshot",
+                    new ByteArrayInputStream(screenshot));
+            if (result.getThrowable() != null) {
+                Allure.addAttachment("Error",
+                        result.getThrowable().toString());
+            }
         }
-        if (result.getThrowable() != null) {
-            Allure.addAttachment("Error", result.getThrowable().toString());
-        }
-        System.out.println("=== Test Finished: " + result.getName() + " ===");
         DriverFactory.quitDriver();
     }
 
