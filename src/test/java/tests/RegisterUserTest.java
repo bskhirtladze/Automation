@@ -33,4 +33,9 @@ public class RegisterUserTest extends BaseTest {
         System.out.println("Wow!");
 
     }
+
+    @Test
+    public void logOutUserTest() {
+        System.out.println("User log out");
+    }
 }
