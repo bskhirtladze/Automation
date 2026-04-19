@@ -1,9 +1,16 @@
-<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="Automation Suite">
-    <test name="Test Cases">
+<suite name="Automation Suite" verbose="1" parallel="methods" thread-count="2">
+
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+        <listener class-name="listeners.RetryListener"/>
+    </listeners>
+
+    <test name="Register User Tests">
         <classes>
             <class name="tests.RegisterUserTest"/>
         </classes>
     </test>
+
 </suite>
