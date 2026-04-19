@@ -1,5 +1,6 @@
 package base;
 
+import io.qameta.allure.Allure;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Dimension;
@@ -30,16 +31,13 @@ public class BaseTest {
 
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
-
-        // 1. Screenshot on failure
         if (result.getStatus() == ITestResult.FAILURE) {
             ScreenshotUtil.capture(driver, result.getName());
         }
-
-        // 2. Logging
+        if (result.getThrowable() != null) {
+            Allure.addAttachment("Error", result.getThrowable().toString());
+        }
         System.out.println("=== Test Finished: " + result.getName() + " ===");
-
-        // 3. Quit driver
         DriverFactory.quitDriver();
     }
 

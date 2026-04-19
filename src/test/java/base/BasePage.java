@@ -1,6 +1,7 @@
 package base;
 
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -22,6 +23,7 @@ public class BasePage {
         this.wait = new WebDriverWait(this.driver, Duration.ofSeconds(20));
     }
 
+    @Step
     protected void click(By locator) {
         try {
             WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
@@ -33,11 +35,13 @@ public class BasePage {
         }
     }
 
+    @Step
     public CustomElement find(By locator) {
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
         return new CustomElement(driver, element);
     }
 
+    @Step
     public void closePopupFromAnyIframe(By closeBtnLocator) {
         List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
 
