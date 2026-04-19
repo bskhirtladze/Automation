@@ -9,26 +9,23 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import utils.ConfigReader;
 import utils.ScreenshotUtil;
+import utils.TestContext;
+
+import java.lang.reflect.Method;
 
 public class BaseTest {
     protected WebDriver driver;
     private static final Logger logger = LogManager.getLogger(BaseTest.class);
 
     @BeforeMethod(alwaysRun = true)
-    public void setUp() {
-        // 1. Driver init (thread-safe)
+    public void setUp(Method method) {
+
+        TestContext.setTestName(method.getName());
         driver = DriverFactory.initDriver();
-
-        // 2. Browser setup
         driver.manage().window().setSize(new Dimension(1920, 1080));
-        // 3. Open base URL from config
         driver.get(ConfigReader.get("base.url"));
-
-        // 4. Optional: clear cookies
         driver.manage().deleteAllCookies();
-
-        // 5. Optional: logging
-        System.out.println("=== Test Started ===");
+        System.out.println("[" + TestContext.getTestName() + "] === Test Started ===");
     }
 
     @AfterMethod(alwaysRun = true)
