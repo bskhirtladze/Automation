@@ -2,11 +2,15 @@ package tests;
 
 import base.BaseTest;
 import enums.NavigationItem;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.NavigationPage;
 import pages.TestCasePage;
 
+import static org.testng.internal.Utils.log;
+
+@Slf4j
 public class RegisterUserTest extends BaseTest {
 
     @Test
@@ -30,7 +34,7 @@ public class RegisterUserTest extends BaseTest {
 
         logStep(4, "Click test case number");
         testCasePage.clickTestCaseByIndex(2);
-        System.out.println("Wow!");
+        log("Wow!");
 
     }
 
