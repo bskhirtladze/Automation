@@ -2,7 +2,6 @@ package pages;
 
 import base.BasePage;
 import base.ElementHighlighter;
-import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
@@ -21,13 +20,11 @@ public class TestCasePage extends BasePage {
         super(driver);
     }
 
-    @Step
     public String getTitle() {
         log.info("Get text from title");
         return find(titleTextLocator).getText().trim();
     }
 
-    @Step
     public void clickTestCaseByIndex(int index) {
         index = index - 1;
         List<WebElement> elements = wait.until(

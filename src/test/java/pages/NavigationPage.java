@@ -3,7 +3,6 @@ package pages;
 
 import base.BasePage;
 import enums.NavigationItem;
-import io.qameta.allure.Step;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -17,7 +16,6 @@ public class NavigationPage extends BasePage {
         super(driver);
     }
 
-    @Step
     public void navigateTo(NavigationItem item) {
         String xpath = String.format(
                 "//ul[@class='nav navbar-nav']//a[contains(@href, '%s')]",
