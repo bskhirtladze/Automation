@@ -5,8 +5,6 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +12,7 @@ import java.time.Duration;
 
 /**
  * Thread-safe WebDriver factory using ThreadLocal.
- * Supports chrome and firefox; reads config from ConfigManager.
+ * Supports chrome; reads config from ConfigManager.
  */
 public class DriverFactory {
 
@@ -24,17 +22,12 @@ public class DriverFactory {
     private DriverFactory() {}
 
     public static void createDriver() {
-        String browser = ConfigManager.getInstance().getBrowser().toLowerCase().trim();
-        log.info("Creating '{}' driver (headless={})", browser,
+        log.info("Creating 'chrome' driver (headless={})",
                 ConfigManager.getInstance().isHeadless());
 
-        WebDriver driver = switch (browser) {
-            case "firefox" -> createFirefoxDriver();
-            default        -> createChromeDriver();   // chrome is the default
-        };
+        WebDriver driver = createChromeDriver();
 
-        // Timeouts
-        int implicitWait   = ConfigManager.getInstance().getImplicitWait();
+        int implicitWait    = ConfigManager.getInstance().getImplicitWait();
         int pageLoadTimeout = ConfigManager.getInstance().getPageLoadTimeout();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitWait));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(pageLoadTimeout));
@@ -70,7 +63,7 @@ public class DriverFactory {
         }
     }
 
-    // ── Browser builders ─────────────────────────────────────────────────────
+    // ── Browser builder ──────────────────────────────────────────────────────
 
     private static WebDriver createChromeDriver() {
         WebDriverManager.chromedriver().setup();
@@ -84,34 +77,23 @@ public class DriverFactory {
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--window-size=1920,1080");
 
-        // ── Headless ────────────────────────────────
-        if (ConfigManager.getInstance().isHeadless()) {
-            options.addArguments("--headless=new");  // "new" headless avoids Chrome 112+ issues
+        // ── Headless: auto-enable on CI, or if explicitly set in config ──
+        boolean isCI     = System.getenv("CI") != null;
+        boolean headless = ConfigManager.getInstance().isHeadless() || isCI;
+        if (headless) {
+            options.addArguments("--headless=new");
+            log.info("Running Chrome in headless mode (CI={})", isCI);
         }
 
-        // ── Suppress noise ──────────────────────────
+        // ── Suppress noise ───────────────────────────────────────────────
         options.addArguments("--disable-extensions");
         options.addArguments("--disable-infobars");
         options.addArguments("--disable-notifications");
         options.addArguments("--disable-popup-blocking");
-        options.addArguments("--blink-settings=imagesEnabled=false"); // faster page loads
+        options.addArguments("--blink-settings=imagesEnabled=false");
         options.setExperimentalOption("excludeSwitches",
                 java.util.List.of("enable-automation", "enable-logging"));
 
         return new ChromeDriver(options);
-    }
-
-    private static WebDriver createFirefoxDriver() {
-        WebDriverManager.firefoxdriver().setup();
-
-        FirefoxOptions options = new FirefoxOptions();
-
-        if (ConfigManager.getInstance().isHeadless()) {
-            options.addArguments("--headless");
-            options.addArguments("--width=1920");
-            options.addArguments("--height=1080");
-        }
-
-        return new FirefoxDriver(options);
     }
 }
