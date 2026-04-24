@@ -2,25 +2,26 @@ package tests;
 
 import base.BaseTest;
 import enums.NavigationItem;
-import lombok.extern.slf4j.Slf4j;
+import io.qameta.allure.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.NavigationPage;
 import pages.TestCasePage;
 
-import static org.testng.internal.Utils.log;
-
-@Slf4j
+@Epic("User Management")
+@Feature("Test Cases Page")
 public class RegisterUserTest extends BaseTest {
 
-    @Test
+    @Test(description = "Navigate to Test Cases page and interact with a test case")
+    @Story("User can browse test cases")
+    @Severity(SeverityLevel.NORMAL)
     public void registerUser() {
 
         String expectedTitleText = "TEST CASES";
-        String actualTitleText;
 
-        TestCasePage testCasePage = new TestCasePage(driver);
-        NavigationPage navigationPage = new NavigationPage(driver);
+        // FIX 1: No-arg constructors — driver is managed internally by DriverFactory
+        TestCasePage testCasePage = new TestCasePage();
+        NavigationPage navigationPage = new NavigationPage();
 
         logStep(1, "Navigate to TEST CASES page");
         navigationPage.navigateTo(NavigationItem.CASES);
@@ -29,17 +30,22 @@ public class RegisterUserTest extends BaseTest {
         testCasePage.closePopupFromAnyIframe(testCasePage.closePopUpLocator);
 
         logStep(3, "Assert title text");
-        actualTitleText = testCasePage.getTitle();
-        Assert.assertEquals(actualTitleText, expectedTitleText, "Title text should be " + expectedTitleText);
+        String actualTitleText = testCasePage.getTitle();
+        Assert.assertEquals(actualTitleText, expectedTitleText,
+                "Title text should be " + expectedTitleText);
 
         logStep(4, "Click test case number");
         testCasePage.clickTestCaseByIndex(2);
-        log("Wow!");
 
+        // FIX 2: Use the inherited SLF4J logger — not org.testng.internal.Utils.log
+        log.info("Wow!");
     }
 
-    @Test
+    @Test(description = "User log out")
+    @Story("User can log out")
+    @Severity(SeverityLevel.CRITICAL)
     public void logOutUserTest() {
-        System.out.println("User log out");
+        // FIX 3: Use logger instead of System.out.println
+        log.info("User log out");
     }
 }

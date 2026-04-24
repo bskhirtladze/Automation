@@ -2,6 +2,7 @@ package base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import utils.ElementHighlighter;
 
 public class CustomElement {
     private WebDriver driver;
