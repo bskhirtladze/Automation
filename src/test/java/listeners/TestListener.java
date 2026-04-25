@@ -1,5 +1,6 @@
 package listeners;
 
+import base.DriverFactory;
 import config.ConfigManager;
 import io.qameta.allure.Allure;
 import org.apache.commons.io.FileUtils;
@@ -23,8 +24,6 @@ public class TestListener implements ITestListener {
     private static final DateTimeFormatter FMT =
             DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 
-    // ── Lifecycle ────────────────────────────────────────────────────────────
-
     @Override
     public void onTestStart(ITestResult result) {
         log.info("▶  STARTED  : {}.{}",
@@ -46,10 +45,16 @@ public class TestListener implements ITestListener {
                         ? result.getThrowable().getMessage()
                         : "unknown error");
 
-        WebDriver driver = getDriver(result);
-        if (driver != null) {
-            takeScreenshot(driver, result.getName());
-            attachScreenshotToAllure(driver, result.getName());
+        try {
+            WebDriver driver = DriverFactory.getDriver();
+            if (driver != null) {
+                takeScreenshot(driver, result.getName());
+                attachScreenshotToAllure(driver, result.getName());
+            } else {
+                log.warn("Driver is null — skipping screenshot for: {}", result.getName());
+            }
+        } catch (Exception e) {
+            log.error("Screenshot failed: {}", e.getMessage());
         }
     }
 
@@ -67,31 +72,6 @@ public class TestListener implements ITestListener {
         log.warn("⚠️  WITHIN SUCCESS % : {}", result.getName());
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
-
-    /**
-     * Tries to pull a WebDriver from the test instance.
-     * Expects the test class to expose a {@code getDriver()} method
-     * or a {@code driver} field. Silently returns null if neither exists.
-     */
-    private WebDriver getDriver(ITestResult result) {
-        try {
-            Object instance = result.getInstance();
-            try {
-                java.lang.reflect.Method m = instance.getClass().getMethod("getDriver");
-                return (WebDriver) m.invoke(instance);
-            } catch (NoSuchMethodException ignored) {
-                java.lang.reflect.Field f = instance.getClass().getDeclaredField("driver");
-                f.setAccessible(true);
-                return (WebDriver) f.get(instance);
-            }
-        } catch (Exception e) {
-            log.debug("Could not retrieve WebDriver from test instance: {}", e.getMessage());
-            return null;
-        }
-    }
-
-    /** Saves a PNG screenshot to the configured screenshots directory. */
     private void takeScreenshot(WebDriver driver, String testName) {
         if (!ConfigManager.getInstance().screenshotOnFailure()) return;
 
@@ -109,7 +89,6 @@ public class TestListener implements ITestListener {
         }
     }
 
-    /** Attaches the screenshot inline to the Allure report. */
     private void attachScreenshotToAllure(WebDriver driver, String testName) {
         try {
             byte[] bytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
@@ -119,6 +98,7 @@ public class TestListener implements ITestListener {
                     new ByteArrayInputStream(bytes),
                     "png"
             );
+            log.info("📎 Screenshot attached to Allure for: {}", testName);
         } catch (Exception e) {
             log.error("Failed to attach screenshot to Allure: {}", e.getMessage());
         }
