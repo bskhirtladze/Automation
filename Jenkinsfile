@@ -32,7 +32,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'mvn test -B -q'
+                bat 'mvn test -B -q'
             }
             post {
                 always {
