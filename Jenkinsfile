@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     triggers {
-        // Runs every day at 8:00 AM — adjust cron as needed
+
         cron('0 8 * * *')
     }
 
     tools {
-        maven 'Maven'   // must match the name in Jenkins → Global Tool Configuration
-        jdk   'JDK21'   // must match the name in Jenkins → Global Tool Configuration
+        maven 'Maven'
+        jdk   'JDK21'
     }
 
     environment {
@@ -20,9 +20,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
-                    // If private repo, use credentialsId:
-                    // credentialsId: 'github-token',
+                    url: 'https://github.com/bskhirtladze/Automation.git'
             }
         }
 
