@@ -41,11 +41,32 @@ public class RegisterUserTest extends BaseTest {
         log.info("Wow!");
     }
 
+    @Test(description = "User work")
+    @Story("User can work")
+    @Severity(SeverityLevel.CRITICAL)
+    public void userWorkTest() {
+        log.info("User is working");
+    }
+
+    @Test(description = "User on hold")
+    @Story("User hold")
+    @Severity(SeverityLevel.NORMAL)
+    public void userOnHoldTest() {
+        log.info("User is on hold");
+    }
+
+    @Test(description = "User stack")
+    @Story("User stack")
+    @Severity(SeverityLevel.MINOR)
+    public void userStackTest() {
+        Assert.assertFalse(true, "This test should fail");
+        log.error("User stack");
+    }
+
     @Test(description = "User log out")
     @Story("User can log out")
     @Severity(SeverityLevel.CRITICAL)
     public void logOutUserTest() {
-        // FIX 3: Use logger instead of System.out.println
         log.info("User log out");
     }
 }
